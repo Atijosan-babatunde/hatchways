@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import './style.css';
 
 
-function Main({ data }) {
-    return data && data.length > 0 && data.map(({ id, pic, firstName, lastName, email, grades, company, skill }) => {
+function Main({ data, setPosts }) {
+
+    const [tag, newTag] = useState("new ");
+
+    return data && data.length > 0 && data.map(({ id, pic, firstName, lastName, email, grades, company, skill, tags }) => {
+
         let sum = 0;
         for (let i = 0; i <= grades.length - 1; i++) {
             sum += parseInt(grades[i]);
@@ -28,23 +32,49 @@ function Main({ data }) {
                                             <p className="quote-fullwidth-text"> Email: {email} </p>
                                             <p className="quote-fullwidth-text"> Company: {company} </p>
                                             <p className="quote-fullwidth-text"> Skill: {skill} </p>
-                                            <p className="quote-fullwidth-text"> Average: {parseFloat(sum || 0).toFixed(2)}% </p>
+                                            <p className="quote-fullwidth-text"> Average: {parseFloat(sum || 0).toFixed(2)}% </p> 
 
+                                            <div>
+                                                {tags.map((item) => <div class="btn btn-light" style={{ display : "block" , margin : "5px "}}> <p> {item}  </p></div>)}
+                                            </div>
 
-                                            {/* <button type="button" class="btn btn-light">new tag</button> */}
-                                            <input type="text" className="form-control" placeholder="Add a tag" />
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                placeholder="Add a tag"
+                                                value={tag || ""}
+                                                onChange={(e) => newTag(e.target.value)}
+                                                onKeyPress={(event) => {
+                                                    if (event.key === "Enter") {
+                                                        setPosts(prevState => (
+                                                            prevState.map(item => item.id === id ? ({ ...item, tags: [...item.tags, tag] }) : item)
+                                                        ));
+                                                        newTag();
+                                                        }
+                                                }} />
+
                                         </div>
                                     </div>
                                 </button>
                             </h2>
                             <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-                                 <div className="accordion-body">{grades}% </div>
+                                <div className="accordion-body">
+                                    <div style={{ width: "300px", margin: "auto" }}>
+                                        {grades.map((item, index) => <div>
+                                            <span>
+                                                <span> test{index + 1} </span>
+                                                <span style={{ marginLeft: "30px" }}> {item} </span>
+                                            </span>
+                                        </div>)
+                                        }
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                     </div>
                 </div>
-                
+
             </div>
         )
     })
